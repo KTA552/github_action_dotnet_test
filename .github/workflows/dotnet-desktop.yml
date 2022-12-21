@@ -82,5 +82,5 @@ jobs:
         Configuration: ${{ matrix.configuration }}
 
     - name: Zip
-      run: compress-archive ${{github.workspace}}\publish\* ${{ github.workspace }}\app.zip
+      run: compress-archive ${{github.workspace}}\ConsoleApp\publish\* ${{ github.workspace }}\ConsoleApp\app.zip
       
