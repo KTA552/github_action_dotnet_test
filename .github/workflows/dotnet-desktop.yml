@@ -24,7 +24,7 @@ jobs:
         uses: nuget/setup-nuget@v1
         
       - name: Restore NuGet packages
-        run: nuget restore AspnetMvc48.sln
+        run: nuget restore ConsoleApp/ConsoleApp.sln
       
       - name: Build
         run: msbuild ConsoleApp/ConsoleApp.sln /p:Configuration=Release /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl=${{ github.workspace }}\publish /p:PrecompileBeforePublish=true /p:EnableUpdateable=false
