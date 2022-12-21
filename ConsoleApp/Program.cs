@@ -11,8 +11,6 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
             System.Console.WriteLine("hello, world");
-
-            error;
         }
     }
 }
