@@ -86,4 +86,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: my-artifact
-        path: ./ConsoleApp/bin/Release/ConsoleApp.exe
+        path: ConsoleApp/bin/Release/ConsoleApp.exe
