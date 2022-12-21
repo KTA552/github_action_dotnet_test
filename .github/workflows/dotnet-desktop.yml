@@ -85,5 +85,5 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: MSIX Package
-        path: \bin\*
+        name: my-artifact
+        path: bin/
