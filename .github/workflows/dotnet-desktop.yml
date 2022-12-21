@@ -86,4 +86,4 @@ jobs:
         # Artifact name
         name: upload artifact # optional, default is artifact
         # A file, directory or wildcard pattern that describes what to upload
-        path: ${{ github.workspace }}/ConsoleApp/Build/*
+        path: ${{ github.workspace }}\ConsoleApp\bin\Release\ConsoleApp.exe
