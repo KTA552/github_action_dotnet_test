@@ -61,7 +61,7 @@ jobs:
       with:
         fetch-depth: 0
       env:
-        BRANCH: "${{GITHUB_REF#refs/heads/}}
+        BRANCH: "${{github.ref}}
 
     # Install the .NET Core workload
     - name: Install .NET Core
