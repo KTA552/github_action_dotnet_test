@@ -79,7 +79,9 @@ jobs:
       run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /t:rebuild /verbosity:detailed
       env:
         Configuration: ${{ matrix.configuration }}
-        
+    - name: Zip
+      run: compress-archive ${{ github.workspace }}\ConsoleApp\bin\&env:Configration\* ${{ github.workspace }}\app.zip    
+    
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
