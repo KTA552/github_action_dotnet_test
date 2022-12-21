@@ -1,33 +1,55 @@
-name: .NET Core
+
+name: ASP.NET MVC (.NET Framework 4.8) to App Service
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: aspnet-mvc-dotnetframework48
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Version ID
-      run: |
-        VERSION=`git describe --tags --abbrev=0` || VERSION="0.0.0-SNAPSHOT-`git rev-parse --short HEAD`" ; echo "VERSION=$VERSION" >> $GITHUB_ENV
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.100
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build -property:Version=$VERSION --configuration Release --no-restore
-    - name: Publish
-      run: dotnet publish --no-build --configuration Release -o publish Bcr.Example.Gitflow
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: Bcr.Example.Gitflow-${{ env.VERSION }}
-        path: publish
+      - uses: actions/checkout@v3
+      
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+      
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v1
+        
+      - name: Restore NuGet packages
+        run: nuget restore AspnetMvc48.sln
+      
+      - name: Build
+        run: msbuild ConsoleApp/ConsoleApp.sln /p:Configuration=Release /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl=${{ github.workspace }}\publish /p:PrecompileBeforePublish=true /p:EnableUpdateable=false
+     
+      - name: Zip
+        run: compress-archive ${{ github.workspace }}\publish\* ${{ github.workspace }}\app.zip
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app
+          path: ${{ github.workspace }}\app.zip
+
+  deploy:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Download app
+        uses: actions/download-artifact@v3
+        with:
+          name: app
+          
+      - name: Deploy to App Service
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: "app-eru-netframework-mvc"
+          publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
+          package: ${{ github.workspace }}\app.zip
